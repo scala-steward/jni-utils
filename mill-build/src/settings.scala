@@ -24,10 +24,15 @@ trait GenerateHeaders extends JavaModule {
       else
         Nil
     }
-    for (f <- headerFiles) {
-      val content = os.read.bytes(f)
-      for (updatedContent <- toCrLfOpt(content))
-        os.write.over(f, updatedContent)
+    // javac writes the headers straight in the source tree, and uses the line endings
+    // of the current OS - normalize those to CRLF, like the checked in headers.
+    // The filesystem checker needs to be disabled, as we write outside of Task.dest.
+    BuildCtx.withFilesystemCheckerDisabled {
+      for (f <- headerFiles) {
+        val content = os.read.bytes(f)
+        for (updatedContent <- toCrLfOpt(content))
+          os.write.over(f, updatedContent)
+      }
     }
     res
   }
