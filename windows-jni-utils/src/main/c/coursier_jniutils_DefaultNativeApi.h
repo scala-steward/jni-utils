@@ -26,26 +26,26 @@ JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_enableAnsiOutp
 /*
  * Class:     coursier_jniutils_DefaultNativeApi
  * Method:    GetUserEnvironmentVariableNative
- * Signature: ([B)[B
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursier_jniutils_DefaultNativeApi_GetUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_GetUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     coursier_jniutils_DefaultNativeApi
  * Method:    SetUserEnvironmentVariableNative
- * Signature: ([B[B)[B
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursier_jniutils_DefaultNativeApi_SetUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_SetUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     coursier_jniutils_DefaultNativeApi
  * Method:    DeleteUserEnvironmentVariableNative
- * Signature: ([B)[B
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursier_jniutils_DefaultNativeApi_DeleteUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_DeleteUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     coursier_jniutils_DefaultNativeApi
@@ -61,6 +61,14 @@ JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_GetKnownFolder
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_GetModuleFileNameNative
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     coursier_jniutils_DefaultNativeApi
+ * Method:    GetOEMCodePageNative
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_coursier_jniutils_DefaultNativeApi_GetOEMCodePageNative
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus

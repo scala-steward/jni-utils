@@ -11,18 +11,18 @@ JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNat
   return Java_coursier_jniutils_DefaultNativeApi_enableAnsiOutputNative(env, class);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key) {
+JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key) {
   return Java_coursier_jniutils_DefaultNativeApi_GetUserEnvironmentVariableNative(env, class, key);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_SetUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key, jbyteArray value) {
+JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_SetUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key, jstring value) {
   return Java_coursier_jniutils_DefaultNativeApi_SetUserEnvironmentVariableNative(env, class, key, value);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_DeleteUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key) {
+JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_DeleteUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key) {
   return Java_coursier_jniutils_DefaultNativeApi_DeleteUserEnvironmentVariableNative(env, class, key);
 }
 
@@ -34,4 +34,9 @@ JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNat
 JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetModuleFileNameNative
   (JNIEnv *env, jclass class) {
   return Java_coursier_jniutils_DefaultNativeApi_GetModuleFileNameNative(env, class);
+}
+
+JNIEXPORT jint JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetOEMCodePageNative
+  (JNIEnv *env, jclass class) {
+  return Java_coursier_jniutils_DefaultNativeApi_GetOEMCodePageNative(env, class);
 }

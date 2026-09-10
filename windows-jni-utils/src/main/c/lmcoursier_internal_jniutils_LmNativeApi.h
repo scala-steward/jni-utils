@@ -26,26 +26,26 @@ JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_enableAn
 /*
  * Class:     lmcoursier_internal_jniutils_LmNativeApi
  * Method:    GetUserEnvironmentVariableNative
- * Signature: ([B)[B
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     lmcoursier_internal_jniutils_LmNativeApi
  * Method:    SetUserEnvironmentVariableNative
- * Signature: ([B[B)[B
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_SetUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray, jbyteArray);
+JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_SetUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     lmcoursier_internal_jniutils_LmNativeApi
  * Method:    DeleteUserEnvironmentVariableNative
- * Signature: ([B)[B
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_DeleteUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_DeleteUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     lmcoursier_internal_jniutils_LmNativeApi
@@ -61,6 +61,14 @@ JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetKnown
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetModuleFileNameNative
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     lmcoursier_internal_jniutils_LmNativeApi
+ * Method:    GetOEMCodePageNative
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetOEMCodePageNative
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus

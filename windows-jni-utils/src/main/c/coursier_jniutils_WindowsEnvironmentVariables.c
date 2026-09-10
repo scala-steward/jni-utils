@@ -2,57 +2,109 @@
 #define _WIN32_WINNT 0x0600
 #define UNICODE
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <windows.h>
 #include "coursier_jniutils_DefaultNativeApi.h"
+
+static const WCHAR *ENVIRONMENT_KEY = L"Environment";
+
+/* Copies a Java string to a null-terminated UTF-16 buffer, which is what the *W registry
+   functions expect. jchar and WCHAR are both UTF-16 code units, so nothing is re-encoded
+   along the way. Going through the *A functions instead meant the value was encoded with
+   the default charset on the Java side and decoded with the process' ANSI code page by
+   Windows; whenever those two disagreed, non-ASCII characters were mangled or replaced
+   by '?'. */
+static WCHAR *toWide(JNIEnv *env, jstring s, jsize *lenOut) {
+  const jsize len = (*env)->GetStringLength(env, s);
+  WCHAR *buf = (WCHAR *) malloc(((size_t) len + 1) * sizeof(WCHAR));
+  if (buf == NULL) {
+    jclass cls = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
+    if (cls != NULL)
+      (*env)->ThrowNew(env, cls, "Cannot allocate environment variable buffer");
+    return NULL;
+  }
+  (*env)->GetStringRegion(env, s, 0, len, (jchar *) buf);
+  buf[len] = 0;
+  if (lenOut != NULL)
+    *lenOut = len;
+  return buf;
+}
+
+static jstring emptyString(JNIEnv *env) {
+  const jchar none = 0;
+  return (*env)->NewString(env, &none, 0);
+}
+
+static jstring errorMessage(JNIEnv *env, LSTATUS status) {
+  jchar digits[20];
+  jchar buf[24];
+  unsigned long value = (unsigned long) status;
+  jsize digitCount = 0;
+  jsize len = 0;
+
+  do {
+    digits[digitCount++] = (jchar) ('0' + (value % 10));
+    value /= 10;
+  } while (value != 0);
+
+  buf[len++] = (jchar) 'E';
+  while (digitCount > 0)
+    buf[len++] = digits[--digitCount];
+
+  return (*env)->NewString(env, buf, len);
+}
 
 /* Windows only expands references to other environment variables, like "%JAVA_HOME%\bin",
    in values stored as REG_EXPAND_SZ. Like the System Properties environment variable dialog,
    we store values containing a '%' that way, and the other ones as plain REG_SZ. */
-static DWORD userEnvironmentVariableType(const jbyte *value, size_t len) {
-  size_t i;
-  for (i = 0; i < len && value[i] != '\0'; i++) {
+static DWORD userEnvironmentVariableType(const WCHAR *value, jsize len) {
+  jsize i;
+  for (i = 0; i < len; i++) {
     if (value[i] == '%')
       return REG_EXPAND_SZ;
   }
   return REG_SZ;
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursier_jniutils_DefaultNativeApi_SetUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key, jbyteArray value) {
+JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_SetUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key, jstring value) {
 
-  jbyte *keyStr = (*env)->GetByteArrayElements(env, key, NULL);
-  jbyte *valueStr = (*env)->GetByteArrayElements(env, value, NULL);
-  const size_t valueLen = (*env)->GetArrayLength(env, value);
+  jsize valueLen = 0;
+  WCHAR *keyStr = toWide(env, key, NULL);
+  if (keyStr == NULL)
+    return NULL;
+  WCHAR *valueStr = toWide(env, value, &valueLen);
+  if (valueStr == NULL) {
+    free(keyStr);
+    return NULL;
+  }
 
-  LSTATUS status = RegSetKeyValueA(
+  /* cbData counts bytes, and is expected to cover the terminating null character. */
+  const DWORD size = (DWORD) (((size_t) valueLen + 1) * sizeof(WCHAR));
+
+  LSTATUS status = RegSetKeyValueW(
     HKEY_CURRENT_USER,
-    "Environment",
+    ENVIRONMENT_KEY,
     keyStr,
     userEnvironmentVariableType(valueStr, valueLen),
     valueStr,
-    valueLen
+    size
   );
 
-  (*env)->ReleaseByteArrayElements(env, key, keyStr, JNI_ABORT);
-  (*env)->ReleaseByteArrayElements(env, value, valueStr, JNI_ABORT);
-  if (status != ERROR_SUCCESS) {
-    char dummy = 0;
-    int len = snprintf(&dummy, 1, "E%lu", status);
-    jbyteArray arr = (*env)->NewByteArray(env, len + 1);
-    jbyte *data = (*env)->GetByteArrayElements(env, arr, NULL);
-    snprintf(data, len + 1, "E%lu", status);
-    data[len] = '\0';
-    (*env)->ReleaseByteArrayElements(env, arr, data, 0);
-    return arr;
-  }
-  return (*env)->NewByteArray(env, 0);
+  free(keyStr);
+  free(valueStr);
+
+  if (status != ERROR_SUCCESS)
+    return errorMessage(env, status);
+  return emptyString(env);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursier_jniutils_DefaultNativeApi_GetUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key) {
+JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_GetUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key) {
 
-  jbyte *keyStr = (*env)->GetByteArrayElements(env, key, NULL);
+  WCHAR *keyStr = toWide(env, key, NULL);
+  if (keyStr == NULL)
+    return NULL;
 
   DWORD type = 0;
 
@@ -62,81 +114,82 @@ JNIEXPORT jbyteArray JNICALL Java_coursier_jniutils_DefaultNativeApi_GetUserEnvi
      those references by whatever they happened to expand to. */
   const DWORD flags = RRF_RT_REG_SZ | RRF_RT_REG_EXPAND_SZ | RRF_NOEXPAND;
 
-  DWORD size = 1;
-  char dummy = 0;
-  LSTATUS status = RegGetValueA(
+  /* A null buffer asks for the size only, in bytes and including the terminating null.
+     That call is documented to return ERROR_SUCCESS, but take ERROR_MORE_DATA - which is
+     what a sizing call reports elsewhere in the registry API - to mean the same thing. */
+  DWORD size = 0;
+  LSTATUS status = RegGetValueW(
     HKEY_CURRENT_USER,
-    "Environment",
+    ENVIRONMENT_KEY,
     keyStr,
     flags,
     &type,
-    &dummy,
+    NULL,
     &size
   );
 
-  jbyteArray arr = NULL;
-  jbyte *data = NULL;
-
-  if (status == ERROR_SUCCESS || status == ERROR_MORE_DATA) {
-    if (status == ERROR_MORE_DATA) {
-      size = size + 1; /* ??? */
-    }
-    arr = (*env)->NewByteArray(env, size + 1);
-    data = (*env)->GetByteArrayElements(env, arr, NULL);
-
-    data[0] = 'V';
-    status = RegGetValueA(
-      HKEY_CURRENT_USER,
-      "Environment",
-      keyStr,
-      flags,
-      &type,
-      &data[1],
-      &size
-    );
-    (*env)->ReleaseByteArrayElements(env, arr, data, 0);
+  if (status != ERROR_SUCCESS && status != ERROR_MORE_DATA) {
+    free(keyStr);
+    if (status == ERROR_FILE_NOT_FOUND)
+      return NULL;
+    return errorMessage(env, status);
   }
-  (*env)->ReleaseByteArrayElements(env, key, keyStr, JNI_ABORT);
 
-  if (status == ERROR_FILE_NOT_FOUND) {
-    if (arr != NULL) {
-      (*env)->DeleteLocalRef(env, arr);
-    }
+  /* One extra character for the 'V' prefix telling the Java side this is a value. */
+  WCHAR *data = (WCHAR *) malloc((size_t) size + sizeof(WCHAR));
+  if (data == NULL) {
+    free(keyStr);
+    jclass cls = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
+    if (cls != NULL)
+      (*env)->ThrowNew(env, cls, "Cannot allocate environment variable buffer");
     return NULL;
-  } else if (status != ERROR_SUCCESS) {
-    char dummy = 0;
-    int len = snprintf(&dummy, 1, "E%lu", status);
-    jbyteArray arr0 = (*env)->NewByteArray(env, len + 1);
-    jbyte *data = (*env)->GetByteArrayElements(env, arr0, NULL);
-    snprintf(data, len + 1, "E%lu", status);
-    data[len] = '\0';
-    (*env)->ReleaseByteArrayElements(env, arr0, data, 0);
-    return arr0;
   }
 
-  // TODO Check type?
-  return arr;
+  data[0] = (WCHAR) 'V';
+  status = RegGetValueW(
+    HKEY_CURRENT_USER,
+    ENVIRONMENT_KEY,
+    keyStr,
+    flags,
+    &type,
+    &data[1],
+    &size
+  );
+  free(keyStr);
+
+  if (status != ERROR_SUCCESS) {
+    free(data);
+    if (status == ERROR_FILE_NOT_FOUND)
+      return NULL;
+    return errorMessage(env, status);
+  }
+
+  /* RegGetValueW null-terminates string values and counts that terminator in the size it
+     reports back, so trim it rather than carry it over to the Java string. */
+  jsize len = (jsize) (size / sizeof(WCHAR));
+  while (len > 0 && data[len] == 0)
+    len--;
+
+  const jstring result = (*env)->NewString(env, (const jchar *) data, len + 1);
+  free(data);
+  return result;
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursier_jniutils_DefaultNativeApi_DeleteUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key) {
+JNIEXPORT jstring JNICALL Java_coursier_jniutils_DefaultNativeApi_DeleteUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key) {
 
-  jbyte *keyStr = (*env)->GetByteArrayElements(env, key, NULL);
+  WCHAR *keyStr = toWide(env, key, NULL);
+  if (keyStr == NULL)
+    return NULL;
 
-  LSTATUS status = RegDeleteKeyValueA(
+  LSTATUS status = RegDeleteKeyValueW(
     HKEY_CURRENT_USER,
-    "Environment",
+    ENVIRONMENT_KEY,
     keyStr
   );
-  (*env)->ReleaseByteArrayElements(env, key, keyStr, JNI_ABORT);
-  if (status != ERROR_SUCCESS && status != ERROR_FILE_NOT_FOUND) {
-    char dummy = 0;
-    int len = snprintf(&dummy, 1, "E%lu", status);
-    jbyteArray arr = (*env)->NewByteArray(env, len + 1);
-    jbyte *data = (*env)->GetByteArrayElements(env, arr, NULL);
-    snprintf(data, len + 1, "E%lu", status);
-    (*env)->ReleaseByteArrayElements(env, arr, data, 0);
-    return arr;
-  }
-  return (*env)->NewByteArray(env, 0);
+  free(keyStr);
+
+  if (status != ERROR_SUCCESS && status != ERROR_FILE_NOT_FOUND)
+    return errorMessage(env, status);
+  return emptyString(env);
 }
