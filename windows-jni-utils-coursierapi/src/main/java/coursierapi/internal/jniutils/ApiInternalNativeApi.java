@@ -9,9 +9,9 @@ public final class ApiInternalNativeApi extends NativeApi {
 
     static native String enableAnsiOutputNative();
 
-    static native byte[] GetUserEnvironmentVariableNative(byte[] key);
-    static native byte[] SetUserEnvironmentVariableNative(byte[] key, byte[] value);
-    static native byte[] DeleteUserEnvironmentVariableNative(byte[] key);
+    static native String GetUserEnvironmentVariableNative(String key);
+    static native String SetUserEnvironmentVariableNative(String key, String value);
+    static native String DeleteUserEnvironmentVariableNative(String key);
 
     static native String GetKnownFolderPathNative(String rfid);
 
@@ -25,13 +25,13 @@ public final class ApiInternalNativeApi extends NativeApi {
         return enableAnsiOutputNative();
     }
 
-    public byte[] GetUserEnvironmentVariable(byte[] key) {
+    public String GetUserEnvironmentVariable(String key) {
         return GetUserEnvironmentVariableNative(key);
     }
-    public byte[] SetUserEnvironmentVariable(byte[] key, byte[] value) {
+    public String SetUserEnvironmentVariable(String key, String value) {
         return SetUserEnvironmentVariableNative(key, value);
     }
-    public byte[] DeleteUserEnvironmentVariable(byte[] key) {
+    public String DeleteUserEnvironmentVariable(String key) {
         return DeleteUserEnvironmentVariableNative(key);
     }
 

@@ -26,26 +26,26 @@ JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNat
 /*
  * Class:     coursier_bootstrap_launcher_jniutils_BootstrapNativeApi
  * Method:    GetUserEnvironmentVariableNative
- * Signature: ([B)[B
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     coursier_bootstrap_launcher_jniutils_BootstrapNativeApi
  * Method:    SetUserEnvironmentVariableNative
- * Signature: ([B[B)[B
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_SetUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_SetUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     coursier_bootstrap_launcher_jniutils_BootstrapNativeApi
  * Method:    DeleteUserEnvironmentVariableNative
- * Signature: ([B)[B
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_DeleteUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_DeleteUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     coursier_bootstrap_launcher_jniutils_BootstrapNativeApi

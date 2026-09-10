@@ -11,9 +11,9 @@ public abstract class NativeApi {
 
     public abstract String enableAnsiOutput();
 
-    public abstract byte[] GetUserEnvironmentVariable(byte[] key);
-    public abstract byte[] SetUserEnvironmentVariable(byte[] key, byte[] value);
-    public abstract byte[] DeleteUserEnvironmentVariable(byte[] key);
+    public abstract String GetUserEnvironmentVariable(String key);
+    public abstract String SetUserEnvironmentVariable(String key, String value);
+    public abstract String DeleteUserEnvironmentVariable(String key);
 
     public abstract String GetKnownFolderPath(String rfid);
 

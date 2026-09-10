@@ -11,18 +11,18 @@ JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeAp
   return Java_coursier_jniutils_DefaultNativeApi_enableAnsiOutputNative(env, class);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_GetUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key) {
+JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_GetUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key) {
   return Java_coursier_jniutils_DefaultNativeApi_GetUserEnvironmentVariableNative(env, class, key);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_SetUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key, jbyteArray value) {
+JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_SetUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key, jstring value) {
   return Java_coursier_jniutils_DefaultNativeApi_SetUserEnvironmentVariableNative(env, class, key, value);
 }
 
-JNIEXPORT jbyteArray JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_DeleteUserEnvironmentVariableNative
-  (JNIEnv *env, jclass class, jbyteArray key) {
+JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_DeleteUserEnvironmentVariableNative
+  (JNIEnv *env, jclass class, jstring key) {
   return Java_coursier_jniutils_DefaultNativeApi_DeleteUserEnvironmentVariableNative(env, class, key);
 }
 

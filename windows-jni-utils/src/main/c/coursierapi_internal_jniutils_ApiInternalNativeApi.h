@@ -26,26 +26,26 @@ JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeAp
 /*
  * Class:     coursierapi_internal_jniutils_ApiInternalNativeApi
  * Method:    GetUserEnvironmentVariableNative
- * Signature: ([B)[B
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_GetUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_GetUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     coursierapi_internal_jniutils_ApiInternalNativeApi
  * Method:    SetUserEnvironmentVariableNative
- * Signature: ([B[B)[B
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_SetUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_SetUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     coursierapi_internal_jniutils_ApiInternalNativeApi
  * Method:    DeleteUserEnvironmentVariableNative
- * Signature: ([B)[B
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jbyteArray JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_DeleteUserEnvironmentVariableNative
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_DeleteUserEnvironmentVariableNative
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     coursierapi_internal_jniutils_ApiInternalNativeApi
