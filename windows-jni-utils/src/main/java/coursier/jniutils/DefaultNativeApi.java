@@ -14,6 +14,8 @@ public final class DefaultNativeApi extends LowPriorityNativeApi {
 
     static native String GetModuleFileNameNative();
 
+    static native int GetOEMCodePageNative();
+
 
     public String terminalSize() {
         return terminalSizeNative();
@@ -39,5 +41,9 @@ public final class DefaultNativeApi extends LowPriorityNativeApi {
 
     public String GetModuleFileName() {
         return GetModuleFileNameNative();
+    }
+
+    public int GetOEMCodePage() {
+        return GetOEMCodePageNative();
     }
 }

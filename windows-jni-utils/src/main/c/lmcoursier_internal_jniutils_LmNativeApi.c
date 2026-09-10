@@ -35,3 +35,8 @@ JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetModul
   (JNIEnv *env, jclass class) {
   return Java_coursier_jniutils_DefaultNativeApi_GetModuleFileNameNative(env, class);
 }
+
+JNIEXPORT jint JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetOEMCodePageNative
+  (JNIEnv *env, jclass class) {
+  return Java_coursier_jniutils_DefaultNativeApi_GetOEMCodePageNative(env, class);
+}

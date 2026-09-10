@@ -17,6 +17,8 @@ public final class ApiInternalNativeApi extends NativeApi {
 
     static native String GetModuleFileNameNative();
 
+    static native int GetOEMCodePageNative();
+
     public String terminalSize() {
         return terminalSizeNative();
     }
@@ -41,6 +43,10 @@ public final class ApiInternalNativeApi extends NativeApi {
 
     public String GetModuleFileName() {
         return GetModuleFileNameNative();
+    }
+
+    public int GetOEMCodePage() {
+        return GetOEMCodePageNative();
     }
 
     static {

@@ -63,6 +63,14 @@ JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeAp
 JNIEXPORT jstring JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_GetModuleFileNameNative
   (JNIEnv *, jclass);
 
+/*
+ * Class:     coursierapi_internal_jniutils_ApiInternalNativeApi
+ * Method:    GetOEMCodePageNative
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_coursierapi_internal_jniutils_ApiInternalNativeApi_GetOEMCodePageNative
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

@@ -63,6 +63,14 @@ JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetKnown
 JNIEXPORT jstring JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetModuleFileNameNative
   (JNIEnv *, jclass);
 
+/*
+ * Class:     lmcoursier_internal_jniutils_LmNativeApi
+ * Method:    GetOEMCodePageNative
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_lmcoursier_internal_jniutils_LmNativeApi_GetOEMCodePageNative
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

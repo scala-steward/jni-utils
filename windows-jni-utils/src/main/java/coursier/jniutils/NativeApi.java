@@ -19,6 +19,8 @@ public abstract class NativeApi {
 
     public abstract String GetModuleFileName();
 
+    public abstract int GetOEMCodePage();
+
 
     private static NativeApi instance = null;
 

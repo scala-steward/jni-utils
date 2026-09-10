@@ -35,3 +35,8 @@ JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNat
   (JNIEnv *env, jclass class) {
   return Java_coursier_jniutils_DefaultNativeApi_GetModuleFileNameNative(env, class);
 }
+
+JNIEXPORT jint JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetOEMCodePageNative
+  (JNIEnv *env, jclass class) {
+  return Java_coursier_jniutils_DefaultNativeApi_GetOEMCodePageNative(env, class);
+}

@@ -63,6 +63,14 @@ JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNat
 JNIEXPORT jstring JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetModuleFileNameNative
   (JNIEnv *, jclass);
 
+/*
+ * Class:     coursier_bootstrap_launcher_jniutils_BootstrapNativeApi
+ * Method:    GetOEMCodePageNative
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_coursier_bootstrap_launcher_jniutils_BootstrapNativeApi_GetOEMCodePageNative
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif
